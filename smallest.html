@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <title>Найти наименьшее число</title>
+    <script>
+        "use strict";
+        let simple_prod = (n) => {
+            let simple = (n) => {
+                for (let i = 2; i < n; i++)
+                    if (n % i === 0) return false;
+                return true;
+            }
+            let res = 1;
+            for (let i = 2; i <= n; i++)
+                if (simple(i)) {
+                    // console.log("simple:",i)
+                    res *= i;
+                }
+            return res;
+        }
+
+        let smallest = (n) => {
+            // для оптимизации: создаём сокращённый массив всех целых чисел имея в виду,
+            // что делить например на 3 не имеет смысла, если число делится на 9
+            let compressed = [];
+            for (let i = 2; i <= n; i++) {
+                compressed.push(i);
+            }
+            for (let i = 1; i < compressed.length; i++) {
+                let isFit = true;
+                for (let j = 0; j <= i - 1; j++) {
+                    if (compressed[i] % compressed[j] === 0) {
+                        delete compressed[j]; // при удалении получаем дырку (undefined)
+                    }
+                }
+            }
+            // оптимизированный массив получен
+            compressed = compressed.flat(); // удалили "дырки" из массива (undefined)
+            console.log("n=", n, " cmpr=", compressed);
+            // оптимизация приращения и коррекция начального значения
+            let start = 1, delta = 1, seed;
+            if (n > 2) {
+                seed = simple_prod(n);
+                start = n % seed === 0 ? n : n + seed - n % seed;
+                delta = seed;
+            }
+            for (let i = start; i < 1e17; i += delta) {
+                let isFit = true;
+                for (let j of compressed) { // не по всем числам
+                    if (i % j !== 0) {
+                        isFit = false;
+                        break;
+                    }
+                }
+                if (isFit) return i;
+            }
+        }
+
+        function verify(n, num) {
+            console.log("Проверка n=", n, " smallest=", num);
+            for (let i = 2; i <= n; i++) {
+                console.log("number / ", i, " = ", num / i);
+            }
+        }
+
+        function count() {
+            let num = document.getElementById("num");
+            let res = document.getElementById("res");
+            let head = document.getElementById("head");
+            let n = parseInt(num.value), int;
+            let text;
+            head.innerHTML = "Ждем...";
+            res.innerHTML = "";
+            if (isNaN(n)) text = "Надо ввести число";
+            else if (n > 40 || n < 0) text = "Введите положительное число не больше 40";
+            else {
+                let d1 = new Date();
+                text = smallest(n);
+                int = new Date() - d1;
+                // verify(n, text);
+            }
+            num.value = "";
+            head.innerHTML = "Получен результат (для " + n + "):";
+            res.innerHTML = text + (int ? " за " + int / 1000 + " секунд" : "");
+        }
+    </script>
+</head>
+<body>
+<pre><b>Деление чисел</b>
+
+2520 - самое маленькое число, которое может быть разделено
+без остатка числами от 1 до 10.
+
+Напишите функцию smallest(n), которая будет находить самое
+меньшее число, которое будет делиться на n. (n <= 40).
+
+Примеры:
+  smallest(5) == 60
+  smallest(10) == 2520
+  smallest(19) == 232792560 за 3.723 секунд
+  smallest(24) == 5 354 228 880 за 106.843 секунд
+  smallest(27) == 80 313 433 200 за 11.364 секунд
+  smallest(29) == 2 329 089 562 800 за 227.294 секунд
+  smallest(40) == 5 342 931 457 063 200 за 0.039 секунд
+
+</pre>
+<p>введите число: <input type="text" id="num" size="3"></p>
+<p><input type="button" onclick="count()" value="вычислить"></p>
+<p id="head"></p>
+<p id="res"></p>
+</body>
+
+</html>
