@@ -1,0 +1,12 @@
+h1 {
+   color:red;
+   font-family: Geneva, Arial, Helvetica, sans-serif;
+}
+.chapter {
+   border:1px solid;
+   padding:3px 10px;
+   background: gold;
+}
+h5 {text-indent:0.25in;
+   margin-bottom: -5px;
+}
