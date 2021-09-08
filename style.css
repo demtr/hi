@@ -6,6 +6,7 @@ h1 {
    border:1px solid;
    padding:3px 10px;
    background: gold;
+   border-radius: 10px;
 }
 h5 {text-indent:0.25in;
    margin-bottom: -5px;
