@@ -36,7 +36,7 @@
             }
             // оптимизированный массив получен
             compressed = compressed.flat(); // удалили "дырки" из массива (undefined)
-            console.log("n=", n, " cmpr=", compressed);
+            //console.log("n=", n, " cmpr=", compressed);
             // оптимизация приращения и коррекция начального значения
             let start = 1, delta = 1, seed;
             if (n > 2) {
@@ -71,17 +71,23 @@
             let text;
             head.innerHTML = "Ждем...";
             res.innerHTML = "";
-            if (isNaN(n)) text = "Надо ввести число";
-            else if (n > 40 || n < 0) text = "Введите положительное число не больше 40";
-            else {
-                let d1 = new Date();
-                text = smallest(n);
-                int = new Date() - d1;
-                // verify(n, text);
-            }
-            num.value = "";
-            head.innerHTML = "Получен результат (для " + n + "):";
-            res.innerHTML = text + (int ? " за " + int / 1000 + " секунд" : "");
+            // парадокс: текст выше выводится после приведённых ниже вычисений, если они синхронны (если убрать timeout)
+            setTimeout(() => {
+                if (isNaN(n)) {
+                    text = "Надо ввести число";
+                    n = "'"+num.value+"'";
+                }
+                else if (n > 40 || n < 0) text = "Введите положительное число не больше 40";
+                else {
+                    let d1 = new Date();
+                    text = smallest(n);
+                    int = new Date() - d1;
+                    // verify(n, text);
+                }
+                num.value = "";
+                head.innerHTML = "Получен результат (для " + n + "):";
+                res.innerHTML = text + (int ? " за " + int / 1000 + " секунд" : "");
+            }, 5);
         }
     </script>
 </head>
